@@ -4,6 +4,7 @@
 #include <sstream>
 #include <regex>
 #include "header.h"
+#include <vector>
 
 using namespace std;
 
@@ -285,7 +286,7 @@ void database::dodajPokoj()
     }
 }
 
-void database::wyswietlWolnePokoje()
+void database::wyswietlWolnePokojeIDodaIchNumeryDoTablicy(vector <int> &numery)
 {
 
     Pokoj *temp = pierwszy_pokoj;
@@ -325,17 +326,23 @@ void database::wyswietlWolnePokoje()
             cout << "Posilki: ";
             if (temp->czy_posilki) cout << "prawda" << endl;
             else cout << "falsz" << endl;
+
+            // dodanie numeru pokoju do tablicy typu vector w celu pozniejszego sprawdzenia czy uzytkownik wybiera pokoj mozliwy do wynajecia
+            numery.push_back(temp->numer_pokoju);
         }
         temp = temp->nastepny_pokoj;
     }
-    system("pause>0");
 }
 
 
 void database::wynajmijPokoj()
 {
+    vector <int> numery_pokoi;
     system("cls");
-    wyswietlWolnePokoje();
+
+    wyswietlWolnePokojeIDodaIchNumeryDoTablicy(numery_pokoi);
+
+    system("pause>0");
 }
 
 void database::zmienDanePokoju()

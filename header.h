@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <vector>
 
 
 // Stworzenie listy jednokierunkowej
@@ -38,7 +39,8 @@ struct database
     void wyswietlBazeDanych();
     // TODO:: stworzyc funkcje wyszukiwania po imieniu i nazwisku, numerze pokoju, przez wyrazenia regularne
     // wyswietla pokoje do wynajęcia
-    void wyswietlWolnePokoje();
+    // i dodaje ich numery do tablicy typu vector aby sprawdzic czy uzytkownik wybiera pokoj ktory jest mozliwy do wyboru
+    void wyswietlWolnePokojeIDodaIchNumeryDoTablicy(std::vector <int> &numery);
     // funkcja zapisuje baze danych do pliku
     void zapiszBazeDanych(); // do zrobienia
     // funkcja wczytuje baze danych z pliku
