@@ -251,7 +251,7 @@ void database::dodajPokoj()
 
     nowy_pokoj->maksymalna_ilosc_osob = stoi(checkValid("^[0-9]+$", "Podano zle dane, sproboj ponownie", "Podaj maksymalna ilosc osob (dodatnia liczba calkowita): "));
     nowy_pokoj->lazienka = stoi(checkValid("^[01]$", "Podano zle dane, sproboj ponownie", "Czy dostepna jest lazienka: (1 jezeli tak falsz 0 nie):"));
-    nowy_pokoj->cena_pokoju = stod(checkValid("^[0-9]+(\\.[0-9]+)?$","Podano zle dane, sproboj ponownie", "Podaj cene pokoju (liczba dodatnia) (: "));
+    nowy_pokoj->cena_pokoju = stof(checkValid("^[0-9]+(\\.[0-9]+)?$","Podano zle dane, sproboj ponownie", "Podaj cene pokoju (liczba dodatnia) (: "));
     nowy_pokoj->imie_nazwisko = checkFirstNameAndLastName();
 
     // jezeli uzytkownik poda puste imie i nazwisko dane o numerze telefonu i datach tez pozostana puste
@@ -268,7 +268,6 @@ void database::dodajPokoj()
         nowy_pokoj->data_rozpoczecia = checkDate("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$", "Podano zle dane, sproboj ponownie", "Podaj date rozpoczecia pobytu (w formacie rrrr-mm-dd): ");
         nowy_pokoj->data_zakonczenia = checkDate("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$", "Podano zle dane, sproboj ponownie", "Podaj date zakonczenia pobytu (w formacie rrrr-mm-dd): ");
     }
-
     nowy_pokoj->czy_posilki = stoi(checkValid("^[01]$", "Podano zle dane, sproboj ponownie", "Czy dostepne sa posilki: (1 jezeli tak 0 jezeli nie): "));
 
     // dodanie pokoju do listy
@@ -299,18 +298,21 @@ void database::wyswietlWolnePokoje()
         return;
     }
 
+    cout << "----------------- Wolne pokoje -----------------" << endl;
+
     while (temp)
     {
-        cout << "----------------- Wolne pokoje -----------------" << endl;
         if (temp->imie_nazwisko == " ")
         {
-            cout << "--------------------------------------------" << endl;
+            cout << "------------------------------------------------" << endl;
             cout << "Nr. pokoju: " << temp->numer_pokoju << endl;
             cout << "Maksymana ilosc osob: " << temp->maksymalna_ilosc_osob << endl;
 
             cout << "lazienka: ";
             if (temp->lazienka) cout << "prawda" << endl;
             else cout << "falsz" << endl;
+
+            cout << "Cena pokoju: " << temp->cena_pokoju << endl;
 
             cout << "Imie i Nazwisko: " << temp->imie_nazwisko << endl;
 
@@ -332,6 +334,7 @@ void database::wyswietlWolnePokoje()
 
 void database::wynajmijPokoj()
 {
+    system("cls");
     wyswietlWolnePokoje();
 }
 
@@ -509,7 +512,7 @@ void database::zapiszBazeDanych()
         temp = temp->nastepny_pokoj;
     }
     database_file.close();
-    cout << "\bWcisnij enter aby kontynuowac" << endl;
+    cout << "\nWcisnij enter aby kontynuowac" << endl;
     system("pause>0");
 
 }
@@ -548,22 +551,23 @@ void database::wczytajBazeDanych()
     }
     system("cls");
     string file_path;
-    fstream file;
+    fstream database_file;
     do
     {
         cout << "Podaj sciezkie dostepu do pliku bazodanowego (txt): ";
         cin >> file_path;
 
-        file.open(file_path, ios::in);
-        if (!file.is_open())
+        database_file.open(file_path, ios::in);
+        if (!database_file.is_open())
         {
             system("cls");
             cout << "Podano niepoprawna sciezke do pliku" << endl;
         }
-    } while(!file.is_open());
+    } while(!database_file.is_open());
 
     string linia, tablica_wartosci[9];
-    while(getline(file, linia)) // przekazywanie wiersza z pliku do zmiennej wewnątrz warunku petli
+
+    while(getline(database_file, linia)) // przekazywanie wiersza z pliku do zmiennej wewnątrz warunku petli
     {
         splitString(linia, tablica_wartosci);
 
@@ -599,7 +603,8 @@ void database::wczytajBazeDanych()
             nowy_pokoj->nastepny_pokoj = nullptr;
         }
     }
-    file.close();
+
+    database_file.close();
     cout << "Udalo sie wczytac baze danych. Wcisnij enter aby kontynuowac";
     system("pause>0");
 }

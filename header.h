@@ -9,7 +9,7 @@ struct Pokoj
     int numer_pokoju;
     int maksymalna_ilosc_osob;
     bool lazienka;
-    double cena_pokoju;
+    float cena_pokoju;
     std::string imie_nazwisko;
     int nr_telefonu;
     std::string data_rozpoczecia; // rrrr.mm.dd
