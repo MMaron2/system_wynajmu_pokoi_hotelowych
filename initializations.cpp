@@ -321,7 +321,7 @@ void database::wyszukajPoNumerzePokoju()
     {
         if (temp->numer_pokoju == stoi(szukany_numer_pokoju))
         {
-            database::wyswietlWyszukanePokoje(temp);
+            wyswietlWyszukanePokoje(temp);
             liczba_znalezionych_pokoi++;
         }
         temp = temp->nastepny_pokoj;
@@ -331,8 +331,8 @@ void database::wyszukajPoNumerzePokoju()
     {
         cout << "Nie znaleziono zadnych pokoi o podanym numerze" << endl;
         cout << "Wcisnij enter aby kontynuowac" << endl;
-        system("pause>0");
     }
+    system("pause>0");
 
 }
 
@@ -354,7 +354,7 @@ void database::wyszukajPoImieniuINazwisku()
     {
         if (temp->imie_nazwisko == szukane_imie_nazwisko)
         {
-            database::wyswietlWyszukanePokoje(temp);
+            wyswietlWyszukanePokoje(temp);
             liczba_znalezionych_pokoi++;
         }
         temp = temp->nastepny_pokoj;
@@ -364,9 +364,9 @@ void database::wyszukajPoImieniuINazwisku()
     {
         cout << "Nie znaleziono zadnych pokoi o podanym numerze" << endl;
         cout << "Wcisnij enter aby kontynuowac" << endl;
-        system("pause>0");
-    }
 
+    }
+    system("pause>0");
 }
 
 void database::wyszukajZaPomocaWyrazenRegularnych()
@@ -408,7 +408,7 @@ void database::wyszukajZaPomocaWyrazenRegularnych()
                 regex_match(lazienka, wzor) ||
                 regex_match(posilki, wzor))
         {
-            database::wyswietlWyszukanePokoje(temp);
+            wyswietlWyszukanePokoje(temp);
             ile_znalezionych_pokoi++;
         }
         temp = temp->nastepny_pokoj;
@@ -418,9 +418,8 @@ void database::wyszukajZaPomocaWyrazenRegularnych()
     {
         cout << "Nie znaleziono zadnych pokoi o podanym numerze" << endl;
         cout << "Wcisnij enter aby kontynuowac" << endl;
-        system("pause>0");
     }
-
+    system("pause>0");
 }
 
 // ---------------------------------- FUNKCJE OPERACJI NA BAZIE DANYCH ----------------------------------
@@ -598,6 +597,7 @@ void database::wynajmijPokoj() {
                                        "Podano zle dane, sprobuj ponownie",
                                        "Podaj date zakonczenia pobytu (w formacie rrrr-mm-dd): ");
 
+    system("cls");
     cout << "Wynajecie pokoju przebieglo pomyslnie. Zyczymy udanego pobytu" << endl;
     cout << "Wcisnij enter aby kontynuowac" << endl;
     system("pause>0");
@@ -622,9 +622,8 @@ void database::zmienDanePokoju() {
 
     // sprawdzenie czy uzytkownik wprowadza poporawne dane
     string numer_pokoju_do_zmiany;
-    system("cls");
     numer_pokoju_do_zmiany = checkValid("^[0-9]+$", "Wystapil blad sprobuj ponownie",
-                                        "Podaj numer pokoju (dodatnia liczba calkowita): ");
+                                        "\nPodaj numer pokoju (dodatnia liczba calkowita): ");
     string tempStringValue;
 
     // przejscie na szukany element jezeli nie istnieje wyswietla komunikat
@@ -704,6 +703,8 @@ void database::usunPokoj() {
         Pokoj *temp = pierwszy_pokoj;
         pierwszy_pokoj = temp->nastepny_pokoj;
         delete temp;
+
+        system("cls");
         cout << "Pokoj zostal usuniety pomyslnie" << endl;
         cout << "Wcisnij enter aby kontynuowac" << endl;
         system("pause>0");
@@ -721,6 +722,7 @@ void database::usunPokoj() {
         temp = temp->nastepny_pokoj;
         x++;
         if (temp->nastepny_pokoj == nullptr) {
+            system("cls");
             cout << "Taki pokoj nie istnieje. Wcisnij enter aby kontynuowac" << endl;
             system("pause>0");
             return;
@@ -733,6 +735,8 @@ void database::usunPokoj() {
     if (temp->nastepny_pokoj->nastepny_pokoj == nullptr) {
         delete temp->nastepny_pokoj;
         temp->nastepny_pokoj = nullptr;
+
+        system("cls");
         cout << "Pokoj zostal usuniety pomyslnie" << endl;
         cout << "Wcisnij enter aby kontynuowac" << endl;
         system("pause>0");
@@ -742,6 +746,8 @@ void database::usunPokoj() {
     Pokoj *to_delete = temp->nastepny_pokoj; // wskazanie z elementu n-1 na element n
     temp->nastepny_pokoj = temp->nastepny_pokoj->nastepny_pokoj;
     delete to_delete;
+
+    system("cls");
     cout << "Pokoj zostal usuniety pomyslnie" << endl;
     cout << "Wcisnij enter aby kontynuowac" << endl;
     system("pause>0");
@@ -784,7 +790,7 @@ void database::wyswietlBazeDanych() {
         index++;
     }
 
-    cout << "\bWcisnij enter aby kontynuowac" << endl;
+    cout << "\nWcisnij enter aby kontynuowac" << endl;
     system("pause>0");
 }
 
@@ -793,8 +799,8 @@ void database::wyswietlBazeDanych() {
 void database::zapiszBazeDanych() {
 
     system("cls");
-
     string database_name;
+
     // sprawdzenie czy baza danych nie jest pusta jezeli tak konczy dzialanie funkcji
     if (!sprawdzCzyBazaDanychJestPusta()) return;
 
@@ -837,6 +843,7 @@ void database::zapiszBazeDanych() {
         temp = temp->nastepny_pokoj;
     }
     database_file.close();
+    system("cls");
     cout << "Baza danych zostala zapisana pomyslnie w folderze 'save_databases'" << endl;
     cout << "\nWcisnij enter aby kontynuowac" << endl;
     system("pause>0");
@@ -844,7 +851,9 @@ void database::zapiszBazeDanych() {
 
 // wstepny projekt wczytywania bazy danych do programu
 void database::wczytajBazeDanych() {
+
     system("cls");
+    pierwszy_pokoj = nullptr;
     string file_path;
     fstream database_file;
     do {
@@ -896,8 +905,9 @@ void database::wczytajBazeDanych() {
     }
 
     database_file.close();
+
+    system("cls");
     cout << "Udalo sie wczytac baze danych" << endl;
     cout << "Wcisnij enter aby kontynuowac"  << endl;
-
     system("pause>0");
 }

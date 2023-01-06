@@ -40,8 +40,6 @@ struct database
     void usunPokoj();
     // funkcja wyswietla cala baze danych
     void wyswietlBazeDanych();
-    // funkcja wyswietla znalezione przez funkcje wyszukiwania pokoje w bazie danych
-    void wyswietlWyszukanePokoje(Pokoj *&pokoj);
     //fukcja wyszukuje pokoj w liscie o podanym numerze pokoju oraz go wysweitla
     void wyszukajPoNumerzePokoju();
     // funkcja wyszukuje pokoje w liscie o podanym imieniu i nazwisku oraz go wysweitla
@@ -104,4 +102,6 @@ std::string checkFisrstNameAndLastNameEditValue(std::string previousValue);
 // funkcja sprawdza czy podany ciag znakow jest poprawnym wyrazeniem regularnym
 // jezeli tak zwraca true jezeli nie false
 bool czyPoprawneWyrazenie(std::string &wyrazenie);
+
+void wyswietlWyszukanePokoje(Pokoj *&pokoj);
 
