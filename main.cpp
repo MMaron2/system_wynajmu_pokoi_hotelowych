@@ -16,11 +16,11 @@ int main()
         cout << "Wybor: ";
         cin >> choose;
         // sprawdzenie czy uzytkownik wprowadza ciag znakow do zmiennej typu int
-        while(cin.fail()) {
+        if(cin.fail()) {
             cin.clear();
             cin.ignore(256,'\n');
-            cout << "Wybor: ";
-            cin>>choose;
+            system("cls");
+            continue;
         }
 
         switch (choose) {

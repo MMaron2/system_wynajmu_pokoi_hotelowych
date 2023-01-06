@@ -45,6 +45,9 @@ struct database
     void zapiszBazeDanych(); // do zrobienia
     // funkcja wczytuje baze danych z pliku
     void wczytajBazeDanych();
+    // funkcja sprawdza czy baza danych jest pusta
+    // jezeli tak wyswietla odowiedni komunikat
+    bool sprawdzCzyBazaDanychJestPusta();
     database();
 
 };
@@ -73,14 +76,16 @@ bool stringToBoolConvert(std::string &record);
 std::string checkValid(std::string pattern, std::string failInfo, std::string whatToInsertInformation);
 
 // funkcja sprawdza poprawność wpisanego przez użytkownika numeru telefony zwraca albo pusty string albo numer telefonu
-std::string checkPhoneNumber(std::string pattern, std::string failInfo, std::string whatToInsertInformation);
-
-// funkcja sprawdza poprawność wpisanej przez uzytkownika daty zwraca albo date albo pusty string
-// sprawdza poprawnosc wpisanej daty
-std::string checkDate(std::string pattern, std::string failInfo, std::string whatToInsertInformation);
+//std::string checkPhoneNumber(std::string pattern, std::string failInfo, std::string whatToInsertInformation);
+//
+//// funkcja sprawdza poprawność wpisanej przez uzytkownika daty zwraca albo date albo pusty string
+//// sprawdza poprawnosc wpisanej daty
+//std::string checkDate(std::string pattern, std::string failInfo, std::string whatToInsertInformation);
 
 // Funkcja sprawdza czy uzytkownik wprowadzil imie i nazwisko jezeli wpisal "puste" lub pozostawil puste zwraca pusty ciag znakow
 std::string checkFirstNameAndLastName();
+
+std::string checkFirstAndLastNameGettering();
 
 // funkcja sprawdza poprawnosc wpisanych danych przez uzytkownika podaczas zmieniania wartosci juz istniejacego pokoju w liscie
 // jezeli uzytkownik wpisze "zostaw" wartosc zmieniana pozostanie taka sama
