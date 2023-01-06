@@ -176,6 +176,7 @@ std::string checkFirstNameAndLastName() {
     cin.clear();
     cin.ignore();
     getline(cin, imie_nazwisko);
+    if (imie_nazwisko.empty()) return " ";
     if (imie_nazwisko == "puste") return " ";
     else return imie_nazwisko;
 }
@@ -402,7 +403,6 @@ void database::wynajmijPokoj() {
 
     cout << "Wynajecie pokoju przebieglo pomyslnie. Zyczymy udanego pobytu" << endl;
     cout << "Wcisnij enter aby kontynuowac" << endl;
-
     system("pause>0");
 }
 
