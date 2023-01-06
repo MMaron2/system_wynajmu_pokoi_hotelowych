@@ -69,13 +69,25 @@ void splitString(std::string &rekord, std::string tab[]);
 bool stringToBoolConvert(std::string &record);
 
 // funkcja sprawdzająca poprawność wpisanych przez użytkownika danych
-// zwraca ciag znakow
+// zwraca wartosc string jezeli zgadza sie z patternem podanym jako argument funkkcji
 std::string checkValid(std::string pattern, std::string failInfo, std::string whatToInsertInformation);
 
 // funkcja sprawdza poprawność wpisanego przez użytkownika numeru telefony zwraca albo pusty string albo numer telefonu
 std::string checkPhoneNumber(std::string pattern, std::string failInfo, std::string whatToInsertInformation);
 
 // funkcja sprawdza poprawność wpisanej przez uzytkownika daty zwraca albo date albo pusty string
+// sprawdza poprawnosc wpisanej daty
 std::string checkDate(std::string pattern, std::string failInfo, std::string whatToInsertInformation);
 
+// Funkcja sprawdza czy uzytkownik wprowadzil imie i nazwisko jezeli wpisal "puste" lub pozostawil puste zwraca pusty ciag znakow
 std::string checkFirstNameAndLastName();
+
+// funkcja sprawdza poprawnosc wpisanych danych przez uzytkownika podaczas zmieniania wartosci juz istniejacego pokoju w liscie
+// jezeli uzytkownik wpisze "zostaw" wartosc zmieniana pozostanie taka sama
+// zwraca ciag znakow
+std::string checkValidEditValue(std::string pattern, std::string failInfo, std::string whatToInsertInformation, std::string previousValue);
+
+// funkcja sprawdza imie i nazwisko wpisane przez uzytkownika podaczas zmieniania wartosci juz istniejacego pokoju w liscie
+// jezeli uzytkownik wpisze "zostaw" wartosc zmieniana pozostanie taka sama
+// zwraca ciag znakow
+std::string checkFisrstNameAndLastNameEditValue(std::string previousValue);

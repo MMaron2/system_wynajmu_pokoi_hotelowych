@@ -174,7 +174,7 @@ std::string checkFirstNameAndLastName() {
     string imie_nazwisko;
     cout << "Podaj imie i nazwisko (wpisz 'puste' jezeli ma pozostac puste): ";
     cin.clear();
-    cin.ignore();
+    cin.ignore(1000, '\n');
     getline(cin, imie_nazwisko);
     if (imie_nazwisko.empty()) return " ";
     if (imie_nazwisko == "puste") return " ";
@@ -206,7 +206,7 @@ std::string checkPhoneNumber(std::string pattern, std::string failInfo, std::str
     return to_check;
 }
 
-string checkValid(std::string pattern, std::string failInfo, std::string whatToInsertInformation) {
+std::string checkValid(std::string pattern, std::string failInfo, std::string whatToInsertInformation) {
     string to_check;
     std::regex wzor(pattern);
     do {
@@ -227,13 +227,13 @@ void database::dodajPokoj() {
     // sprawdzenie czy uzytkownik dodaje pierwszy pokoj
     if (pierwszy_pokoj == nullptr) {
         cout << "Podaj numer pokoju: ";
-        nowy_pokoj->numer_pokoju = stoi(checkValid("^[0-9]+$", "Podales zle dane, sproboj ponownie",
+        nowy_pokoj->numer_pokoju = stoi(checkValid("^[0-9]+$", "Podales zle dane, sprobuj ponownie",
                                                    "Podaj numer pokoju (dodatnia liczba calkowita): "));;
     } else  // sprawdzenie czy dodajemy drugi pokoj o takim samym numerze jezeli tak wyswietl komuikat o bledzie
     {
         do {
             Pokoj *temp = pierwszy_pokoj;
-            nr_pokoju = stoi(checkValid("^[0-9]+$", "Podales zle dane, sproboj ponownie",
+            nr_pokoju = stoi(checkValid("^[0-9]+$", "Podales zle dane, sprobuj ponownie",
                                         "Podaj numer pokoju (dodatnia liczba calkowita): "));
             while (temp) {
                 if (temp->numer_pokoju == nr_pokoju) {
@@ -248,11 +248,11 @@ void database::dodajPokoj() {
         nowy_pokoj->numer_pokoju = nr_pokoju;
     }
 
-    nowy_pokoj->maksymalna_ilosc_osob = stoi(checkValid("^[0-9]+$", "Podano zle dane, sproboj ponownie",
+    nowy_pokoj->maksymalna_ilosc_osob = stoi(checkValid("^[0-9]+$", "Podano zle dane, sprobuj ponownie",
                                                         "Podaj maksymalna ilosc osob (dodatnia liczba calkowita): "));
-    nowy_pokoj->lazienka = stoi(checkValid("^[01]$", "Podano zle dane, sproboj ponownie",
-                                           "Czy dostepna jest lazienka: (1 jezeli tak falsz 0 nie): "));
-    nowy_pokoj->cena_pokoju = stof(checkValid("^[0-9]+(\\.[0-9]+)?$", "Podano zle dane, sproboj ponownie",
+    nowy_pokoj->lazienka = stoi(checkValid("^[01]$", "Podano zle dane, sprobuj ponownie",
+                                           "Czy dostepna jest lazienka: (1 jezeli tak 0 jezeli nie): "));
+    nowy_pokoj->cena_pokoju = stof(checkValid("^[0-9]+(\\.[0-9]+)?$", "Podano zle dane, sprobuj ponownie",
                                               "Podaj cene pokoju (liczba dodatnia): "));
     nowy_pokoj->imie_nazwisko = checkFirstNameAndLastName();
 
@@ -263,16 +263,16 @@ void database::dodajPokoj() {
         nowy_pokoj->data_rozpoczecia = " ";
         nowy_pokoj->data_zakonczenia = " ";
     } else {
-        nowy_pokoj->nr_telefonu = stoi(checkPhoneNumber("^\\d{9}$", "Podano zle dane, sproboj ponownie",
+        nowy_pokoj->nr_telefonu = stoi(checkPhoneNumber("^\\d{9}$", "Podano zle dane, sprobuj ponownie",
                                                         "Podaj numer telefonu (w formacie xxxxxxxxx): "));
         nowy_pokoj->data_rozpoczecia = checkDate("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$",
-                                                 "Podano zle dane, sproboj ponownie",
+                                                 "Podano zle dane, sprobuj ponownie",
                                                  "Podaj date rozpoczecia pobytu (w formacie rrrr-mm-dd): ");
         nowy_pokoj->data_zakonczenia = checkDate("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$",
-                                                 "Podano zle dane, sproboj ponownie",
+                                                 "Podano zle dane, sprobuj ponownie",
                                                  "Podaj date zakonczenia pobytu (w formacie rrrr-mm-dd): ");
     }
-    nowy_pokoj->czy_posilki = stoi(checkValid("^[01]$", "Podano zle dane, sproboj ponownie",
+    nowy_pokoj->czy_posilki = stoi(checkValid("^[01]$", "Podano zle dane, sprobuj ponownie",
                                               "Czy dostepne sa posilki: (1 jezeli tak 0 jezeli nie): "));
 
     // dodanie pokoju do listy
@@ -286,6 +286,7 @@ void database::dodajPokoj() {
         }
         temp->nastepny_pokoj = nowy_pokoj;
         nowy_pokoj->nastepny_pokoj = nullptr;
+
     }
 }
 
@@ -338,7 +339,6 @@ void database::wyswietlWolnePokojeIDodaIchNumeryDoTablicy(vector<int> &numery) {
 void database::wynajmijPokoj() {
     system("cls");
 
-
     // sprawdzenie czy sa rekordy w bazie danych
     if (pierwszy_pokoj == nullptr) {
         cout << "Brak elementow w bazie danych lub nie dodano bazy danych" << endl;
@@ -367,7 +367,7 @@ void database::wynajmijPokoj() {
     // sprawdzenie poprawnosci wpisywanaych danych przez uzytkownika
     // oraz sprawdzenie czy pokoj jest mozliwy na wynajem
     do {
-        numer_pokoju_do_wynajecia = stoi(checkValid("^[0-9]+$", "Wystapil blad sproboj ponownie",
+        numer_pokoju_do_wynajecia = stoi(checkValid("^[0-9]+$", "Wystapil blad sprobuj ponownie",
                                                     "\nPodaj numer pokoju ktory chcesz wynajac (mozna wybrac tylko jeden z wyswietlonych pokoi: "));
         for (int i = 0; i < numery_pokoi.size(); i++) {
             // sprawdzenie czy numer pokoju znajduje sie w tablicy
@@ -392,13 +392,13 @@ void database::wynajmijPokoj() {
     // wprowadzenie danych osoby wynajmujacej
     cout << "---------------------- Podaj dane ----------------------" << endl;
     temp->imie_nazwisko = checkFirstNameAndLastName();
-    temp->nr_telefonu = stoi(checkPhoneNumber("^\\d{9}$", "Podano zle dane, sproboj ponownie",
+    temp->nr_telefonu = stoi(checkPhoneNumber("^\\d{9}$", "Podano zle dane, sprobuj ponownie",
                                               "Podaj numer telefonu (w formacie xxxxxxxxx): "));
     temp->data_rozpoczecia = checkDate("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$",
-                                       "Podano zle dane, sproboj ponownie",
+                                       "Podano zle dane, sprobuj ponownie",
                                        "Podaj date rozpoczecia pobytu (w formacie rrrr-mm-dd): ");
     temp->data_zakonczenia = checkDate("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$",
-                                       "Podano zle dane, sproboj ponownie",
+                                       "Podano zle dane, sprobuj ponownie",
                                        "Podaj date zakonczenia pobytu (w formacie rrrr-mm-dd): ");
 
     cout << "Wynajecie pokoju przebieglo pomyslnie. Zyczymy udanego pobytu" << endl;
@@ -406,11 +406,114 @@ void database::wynajmijPokoj() {
     system("pause>0");
 }
 
-void database::zmienDanePokoju() {
+std::string checkFisrstNameAndLastNameEditValue(std::string previousValue)
+{
+    string imie_nazwisko;
+    cout << "Podaj imie i nazwisko " << previousValue << " -> ";
+    cin.clear();
+    cin.ignore(1000, '\n');
+    getline(cin, imie_nazwisko);
+    if (imie_nazwisko.empty()) return previousValue;
+    if (imie_nazwisko == "zostaw") return previousValue;
+    return imie_nazwisko;
+}
 
+std::string checkValidEditValue(std::string pattern, std::string failInfo, std::string whatToInsertInformation, std::string previousValue)
+{
+    string to_check;
+    std::regex wzor(pattern);
+    do {
+        cout << whatToInsertInformation << previousValue << " -> ";
+        cin >> to_check;
+        if (to_check == "zostaw") return previousValue;
+        if (!regex_match(to_check, wzor)) cout << failInfo << endl;
+
+    } while (!regex_match(to_check, wzor));
+    return to_check;
+}
+
+
+void database::zmienDanePokoju() {
+    // sprawdzenie czy w bazie danych sa rekordy
+    system("cls");
+    if (pierwszy_pokoj == nullptr) {
+        cout << "Brak elementow w bazie danych" << endl;
+        cout << "wcisnij enter aby kontynowac" << endl;
+        system("pause>0");
+        return;
+    }
+
+    // sprawdzenie czy uzytkownik wprowadza poporawne dane
+    string numer_pokoju_do_zmiany;
+    system("cls");
+    numer_pokoju_do_zmiany = checkValid("^[0-9]+$", "Wystapil blad sprobuj ponownie",
+                    "Podaj numer pokoju (dodatnia liczba calkowita): ");
+
+    Pokoj *temp = pierwszy_pokoj;
+    string tempStringValue;
+
+    // wyswietlenie dostepnych numerow pokoi
+    cout << "Dostepne numery pokoi:" << endl;
+    while (temp)
+    {
+        cout << temp->numer_pokoju << ", ";
+        temp = temp->nastepny_pokoj;
+    }
+
+    // ponowne ustawienie na pierwszy element
+    temp = pierwszy_pokoj;
+
+    // przejscie na szukany element jezeli nie istnieje wyswietla komunikat
+    while (temp)
+    {
+        // nadanie wartosci szukanemu pokojowi
+        // kazda wartosc wprowadzana przez urzytkownika jest sprawdzana
+        // jezeli uzytkownik wpisze "zostaw" wartosc zmiennej pozostanie niezmieniona
+        if (temp->numer_pokoju == stoi(numer_pokoju_do_zmiany))
+        {
+            cout << "Zmiana danych pokoju, wpisz 'zostaw' jezeli ma pozostac bez zmian" << endl;
+
+            tempStringValue = to_string(temp->numer_pokoju);
+            temp->numer_pokoju = stoi(checkValidEditValue("^[0-9]+$", "Wystapil blad sprobuj ponownie", "Numer pokoju (dodatnia liczba calkowita): ", tempStringValue));
+
+            tempStringValue = to_string(temp->maksymalna_ilosc_osob);
+            temp->maksymalna_ilosc_osob = stoi(checkValidEditValue("^[0-9]+$", "Wystapil blad sprobuj ponownie", "Maksymalna ilosc osob (dodatnia liczba calkowita): ", tempStringValue));
+
+            tempStringValue = to_string(temp->lazienka);
+            temp->lazienka = stoi(checkValidEditValue("^[01]$", "Wystapil blad sprobuj ponownie", "Czy dostepna jest lazienka (1 jezeli tak 0 jezeli nie): ", tempStringValue));
+
+            tempStringValue = to_string(temp->cena_pokoju);
+            temp->cena_pokoju = stof(checkValidEditValue("^[0-9]+(\\.[0-9]+)?$", "Wystapil blad sprobuj ponownie", "Cena pokoju (liczba dodatnia): ", tempStringValue));
+
+            temp->imie_nazwisko = checkFisrstNameAndLastNameEditValue(temp->imie_nazwisko);
+
+            tempStringValue = to_string(temp->nr_telefonu);
+            temp->nr_telefonu = stoi(checkValidEditValue("^\\d{9}$", "Wystapil blad sprobuj ponownie", "Numer telefonu (w formacie xxxxxxxxx): ", tempStringValue));
+
+            tempStringValue = temp->data_rozpoczecia;
+            temp->data_rozpoczecia = checkValidEditValue("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$", "Wystapil blad sprobuj ponownie", "Data rozpoczecia pobytu (w formacie rrrr-mm-dd): ", tempStringValue);
+
+            tempStringValue = temp->data_zakonczenia;
+            temp->data_zakonczenia = checkValidEditValue("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$", "Wystapil blad sprobuj ponownie", "Data zakonczenia pobytu (w formacie rrrr-mm-dd): ", tempStringValue);
+
+            tempStringValue = to_string(temp->czy_posilki);
+            temp->czy_posilki = stoi(checkValidEditValue("^[01]$", "Wystapil blad sprobuj ponownie", "Czy dostepne sa posilki (1 jezeli tak 0 jezeli nie): ", tempStringValue));
+
+            cout << "Dane zostaly zmienione posmyslne" << endl;
+            cout << "Wcisnij enter aby kontynuowac" << endl;
+            system("pause>0");
+            return;
+        }
+        temp = temp->nastepny_pokoj;
+    }
+    cout << "Pokoj o takim numerze nie istnieje" << endl;
+    cout << "Wcisnij enter aby kontynuowac" << endl;
+    system("pause>0");
 }
 
 void database::usunPokoj() {
+
+    // sprawdzenie czy w bazie danych sa rekordy
     if (pierwszy_pokoj == nullptr) {
         cout << "Brak elementow w bazie danych" << endl;
         cout << "wcisnij enter aby kontynowac" << endl;
@@ -420,9 +523,10 @@ void database::usunPokoj() {
 
     string id;
     system("cls");
-    id = checkValid("^[0-9]+$", "Wystapil blad sproboj ponownie",
-                    "Podaj ID pokoju do usuniecia (pokoje numerowane są od 1): ");
+    id = checkValid("^[0-9]+$", "Wystapil blad sprobuj ponownie",
+                    "Podaj ID pokoju do usuniecia (pokoje numerowane sa od 1): ");
 
+    // sprawdzenie czy usuwamy pierwszy element tablicy
     if (stoi(id) == 1) {
         Pokoj *temp = pierwszy_pokoj;
         pierwszy_pokoj = temp->nastepny_pokoj;
@@ -531,7 +635,7 @@ void database::zapiszBazeDanych() {
     }
 
 
-    database_name = checkValid(".*\\.txt$", "Wystapil blad sproboj ponownie",
+    database_name = checkValid(".*\\.txt$", "Wystapil blad sprobuj ponownie",
                                "wprowadz nazwe bazy danych z koncowka .txt: ");
     ifstream file("../save_databases/" + database_name);
     if (file.good()) {
