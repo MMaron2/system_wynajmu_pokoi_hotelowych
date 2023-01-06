@@ -28,6 +28,9 @@ struct database
 {
     Pokoj *pierwszy_pokoj;
     // funkcja dodaje pokoj do bazdy danych
+    // sprawdza czy uzytkownik dodaje drugi pokoj o takim smaymu numerze
+    // jezeli tak to zwraca blad i prosi o wybranie innego numeru
+    // numer pokoju jest uznany na klucz glowny bazy danych
     void dodajPokoj();
     // funkcja zamienia pokoj na wynajety i wyswietla dostepne pokoje
     void wynajmijPokoj(); // do zrobienia
@@ -37,7 +40,14 @@ struct database
     void usunPokoj();
     // funkcja wyswietla cala baze danych
     void wyswietlBazeDanych();
-    // TODO:: stworzyc funkcje wyszukiwania po imieniu i nazwisku, numerze pokoju, przez wyrazenia regularne
+    // funkcja wyswietla znalezione przez funkcje wyszukiwania pokoje w bazie danych
+    void wyswietlWyszukanePokoje(Pokoj *&pokoj);
+    //fukcja wyszukuje pokoj w liscie o podanym numerze pokoju oraz go wysweitla
+    void wyszukajPoNumerzePokoju();
+    // funkcja wyszukuje pokoje w liscie o podanym imieniu i nazwisku oraz go wysweitla
+    void wyszukajPoImieniuINazwisku();
+    // funkcja wszukuje wszystkie pokokje ktorych jakas wartosc pasuje do podanego wyrazenia regularnego oraz je wyswietl
+    void wyszukajZaPomocaWyrazenRegularnych();
     // wyswietla pokoje do wynajęcia
     // i dodaje ich numery do tablicy typu vector aby sprawdzic czy uzytkownik wybiera pokoj ktory jest mozliwy do wyboru
     void wyswietlWolnePokojeIDodaIchNumeryDoTablicy(std::vector <int> &numery);
@@ -75,16 +85,10 @@ bool stringToBoolConvert(std::string &record);
 // zwraca wartosc string jezeli zgadza sie z patternem podanym jako argument funkkcji
 std::string checkValid(std::string pattern, std::string failInfo, std::string whatToInsertInformation);
 
-// funkcja sprawdza poprawność wpisanego przez użytkownika numeru telefony zwraca albo pusty string albo numer telefonu
-//std::string checkPhoneNumber(std::string pattern, std::string failInfo, std::string whatToInsertInformation);
-//
-//// funkcja sprawdza poprawność wpisanej przez uzytkownika daty zwraca albo date albo pusty string
-//// sprawdza poprawnosc wpisanej daty
-//std::string checkDate(std::string pattern, std::string failInfo, std::string whatToInsertInformation);
-
 // Funkcja sprawdza czy uzytkownik wprowadzil imie i nazwisko jezeli wpisal "puste" lub pozostawil puste zwraca pusty ciag znakow
 std::string checkFirstNameAndLastName();
 
+// funkcja sprawdza czy uzytkownik wprowadzil poprawne dane podaczas zmiany wartosci pokoju
 std::string checkFirstAndLastNameGettering();
 
 // funkcja sprawdza poprawnosc wpisanych danych przez uzytkownika podaczas zmieniania wartosci juz istniejacego pokoju w liscie
@@ -96,3 +100,8 @@ std::string checkValidEditValue(std::string pattern, std::string failInfo, std::
 // jezeli uzytkownik wpisze "zostaw" wartosc zmieniana pozostanie taka sama
 // zwraca ciag znakow
 std::string checkFisrstNameAndLastNameEditValue(std::string previousValue);
+
+// funkcja sprawdza czy podany ciag znakow jest poprawnym wyrazeniem regularnym
+// jezeli tak zwraca true jezeli nie false
+bool czyPoprawneWyrazenie(std::string &wyrazenie);
+

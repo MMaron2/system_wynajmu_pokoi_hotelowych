@@ -139,7 +139,7 @@ void searchMenu(database *&pokoje) {
         for (int i = 0; i < 12; i++) { cout << char(196); }
         cout << char(217) << endl;
 
-        cout << "\n[1] wyszukaj po nr pokoju" << endl;
+        cout << "\n[1] wyszukaj po numerze pokoju" << endl;
         cout << "[2] wyszukaj po imieniu i nazwisku" << endl;
         cout << "[3] wyszukaj przez wyrazenia reguralnie" << endl;
         cout << "[4] powrot" << endl;
@@ -154,10 +154,13 @@ void searchMenu(database *&pokoje) {
 
         switch (choose) {
             case 1:
+                pokoje->wyszukajPoNumerzePokoju();
                 break;
             case 2:
+                pokoje->wyszukajPoImieniuINazwisku();
                 break;
             case 3:
+                pokoje->wyszukajZaPomocaWyrazenRegularnych();
                 break;
             case 4:
                 system("cls");
@@ -168,7 +171,6 @@ void searchMenu(database *&pokoje) {
         }
     }
 }
-
 // ------------------------------------ FUNKJCE SPRAWDZAJACE ------------------------------------
 
 bool database::sprawdzCzyBazaDanychJestPusta() {
@@ -218,7 +220,7 @@ std::string checkValid(std::string pattern, std::string failInfo, std::string wh
 
 std::string checkFisrstNameAndLastNameEditValue(std::string previousValue) {
     string imie_nazwisko;
-    cout << "Podaj imie i nazwisko " << previousValue << " -> ";
+    cout << "Podaj imie i nazwisko: " << previousValue << " -> ";
     cin.clear();
     cin.ignore(1000, '\n');
     getline(cin, imie_nazwisko);
@@ -241,6 +243,17 @@ std::string checkValidEditValue(std::string pattern, std::string failInfo, std::
     return to_check;
 }
 
+bool czyPoprawneWyrazenie(string &wyrazenie)
+{
+    try {
+        regex wyrazenie_do_sprawdzenia(wyrazenie);
+    } catch (const std::regex_error& e) {
+        cout << "Wyrazenie regularne jest niepoprawne" << endl;
+        return false;
+    }
+    return true;
+}
+
 // ------------------------------- FUNKJE OPIERACJI NA STRINGACH -------------------------------
 
 // funkcja rozdziela pojedynczy wiersz bazy danych na pojedyncze wartosci i zapisuje je do tablicy
@@ -257,6 +270,157 @@ void splitString(std::string &rekord, std::string tab[]) {
 bool stringToBoolConvert(std::string &wartosc_zmieniana) {
     if (wartosc_zmieniana == "1") return true;
     return false;
+}
+
+
+// ---------------------------------- FUNKCJE WYSZUKIWANIA W BAZIE DANYCH ----------------------------------
+
+void wyswietlWyszukanePokoje(Pokoj *&pokoj)
+{
+    cout << "---------------------------------------------------------------" << endl;
+    cout << "Numer pokoju: " << pokoj->numer_pokoju << endl;
+    cout << "Maksymalna ilosc osobo: " << pokoj->maksymalna_ilosc_osob << endl;
+
+    cout << "Czy dostepna lazienka: ";
+    if (pokoj->lazienka == 1) cout << "prawda" << endl;
+    else cout << "falsz" << endl;
+
+    cout << "Cena pokoju: " << pokoj->cena_pokoju << endl;
+    cout << "Imie i Nazwisko: " << pokoj->imie_nazwisko << endl;
+
+    cout << "Numer telefonu: ";
+    if (pokoj->nr_telefonu == 0) cout << " " << endl;
+    else cout << pokoj->nr_telefonu << endl;
+
+    cout << "Data rozpoczecia pobytu: " << pokoj->data_rozpoczecia << endl;
+    cout << "Data zakonczenia pobytu: " << pokoj->data_zakonczenia << endl;
+
+    cout << "Czy dostepne posilki: ";
+    if (pokoj->czy_posilki == 1) cout << "prawda" << endl;
+    else cout << "falsz" << endl;
+
+}
+
+void database::wyszukajPoNumerzePokoju()
+{
+    system("cls");
+
+    if (!sprawdzCzyBazaDanychJestPusta()) return;
+
+    string szukany_numer_pokoju;
+    szukany_numer_pokoju = checkValid("^[0-9]+$", "Podales zle dane, sprobuj ponownie",
+                                      "Podaj numer pokoju (dodatnia liczba calkowita): ");
+
+    system("cls");
+
+    Pokoj *temp = pierwszy_pokoj;
+    int liczba_znalezionych_pokoi = 0;
+
+    // wyszukiwanie pokoju w bazie danych
+    while (temp)
+    {
+        if (temp->numer_pokoju == stoi(szukany_numer_pokoju))
+        {
+            database::wyswietlWyszukanePokoje(temp);
+            liczba_znalezionych_pokoi++;
+        }
+        temp = temp->nastepny_pokoj;
+    }
+    // sprawdzenie czy znaleziono jakies pokoje jezeli nie wyswietla odpowiedni komunikat
+    if (liczba_znalezionych_pokoi == 0)
+    {
+        cout << "Nie znaleziono zadnych pokoi o podanym numerze" << endl;
+        cout << "Wcisnij enter aby kontynuowac" << endl;
+        system("pause>0");
+    }
+
+}
+
+void database::wyszukajPoImieniuINazwisku()
+{
+    system("cls");
+    string szukane_imie_nazwisko;
+    cout << "Podaj imie i nazwisko: ";
+    cin.clear();
+    cin.ignore(1000, '\n');
+    getline(cin, szukane_imie_nazwisko);
+    if (szukane_imie_nazwisko.empty()) szukane_imie_nazwisko = " ";
+
+    Pokoj *temp = pierwszy_pokoj;
+    int liczba_znalezionych_pokoi = 0;
+
+    // wyszukiwanie pokoju w bazie danych
+    while (temp)
+    {
+        if (temp->imie_nazwisko == szukane_imie_nazwisko)
+        {
+            database::wyswietlWyszukanePokoje(temp);
+            liczba_znalezionych_pokoi++;
+        }
+        temp = temp->nastepny_pokoj;
+    }
+    // sprawdzenie czy znaleziono jakies pokoje jezeli nie wyswietla odpowiedni komunikat
+    if (liczba_znalezionych_pokoi == 0)
+    {
+        cout << "Nie znaleziono zadnych pokoi o podanym numerze" << endl;
+        cout << "Wcisnij enter aby kontynuowac" << endl;
+        system("pause>0");
+    }
+
+}
+
+void database::wyszukajZaPomocaWyrazenRegularnych()
+{
+    system("cls");
+    string wyrazenie_regularne;
+    bool czy_poprawne = false;
+    // wprowadzenie wyraznia regularnego przez uzytkownika oraz sprawdzenie czy jest ono poprawne
+    do
+    {
+        cout << "Podaj wyrazenie regularne: ";
+        cin >> wyrazenie_regularne;
+        czy_poprawne = czyPoprawneWyrazenie(wyrazenie_regularne);
+    } while (!czy_poprawne);
+
+    Pokoj *temp = pierwszy_pokoj;
+    int ile_znalezionych_pokoi = 0;
+
+    system("cls");
+
+    std::regex wzor(wyrazenie_regularne);
+    string lazienka, posilki;
+    while (temp)
+    {
+        if (temp->lazienka) lazienka == "prawda";
+        else lazienka = "falsz";
+
+        if (temp->czy_posilki) posilki = "prawda";
+        else posilki = "falsz";
+
+        // sprawdzenie cyz jaka kolwiek wartosc pokoju pasuje do wprowadzonego wyrazenia regularnego
+        if (regex_match(to_string(temp->numer_pokoju), wzor) ||
+                regex_match(to_string(temp->maksymalna_ilosc_osob), wzor) ||
+                regex_match(to_string(temp->cena_pokoju), wzor) ||
+                regex_match(temp->imie_nazwisko, wzor) ||
+                regex_match(to_string(temp->nr_telefonu), wzor) ||
+                regex_match(temp->data_rozpoczecia, wzor) ||
+                regex_match(temp->data_zakonczenia, wzor) ||
+                regex_match(lazienka, wzor) ||
+                regex_match(posilki, wzor))
+        {
+            database::wyswietlWyszukanePokoje(temp);
+            ile_znalezionych_pokoi++;
+        }
+        temp = temp->nastepny_pokoj;
+    }
+    // sprawdzenie czy znaleziono jakies pokoje jezeli nie wyswietla odpowiedni komunikat
+    if (ile_znalezionych_pokoi == 0)
+    {
+        cout << "Nie znaleziono zadnych pokoi o podanym numerze" << endl;
+        cout << "Wcisnij enter aby kontynuowac" << endl;
+        system("pause>0");
+    }
+
 }
 
 // ---------------------------------- FUNKCJE OPERACJI NA BAZIE DANYCH ----------------------------------
