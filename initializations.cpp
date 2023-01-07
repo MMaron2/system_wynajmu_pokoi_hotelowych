@@ -39,7 +39,6 @@ void databaseOptionsMenu(database *&pokoje) {
 
     // wyswietlenie menu
     while (true) {
-
         system("cls");
         cout << char(218);
         for (int i = 0; i < 22; i++) { cout << char(196); }
@@ -194,8 +193,7 @@ std::string checkFirstNameAndLastName() {
     else return imie_nazwisko;
 }
 
-std::string checkFirstAndLastNameGettering()
-{
+std::string checkFirstAndLastNameGettering() {
     string imie_nazwisko;
     cout << "Podaj imie i nazwisko: ";
     cin.clear();
@@ -243,11 +241,10 @@ std::string checkValidEditValue(std::string pattern, std::string failInfo, std::
     return to_check;
 }
 
-bool czyPoprawneWyrazenie(string &wyrazenie)
-{
+bool czyPoprawneWyrazenie(string &wyrazenie) {
     try {
         regex wyrazenie_do_sprawdzenia(wyrazenie);
-    } catch (const std::regex_error& e) {
+    } catch (const std::regex_error &e) {
         cout << "Wyrazenie regularne jest niepoprawne" << endl;
         return false;
     }
@@ -275,14 +272,13 @@ bool stringToBoolConvert(std::string &wartosc_zmieniana) {
 
 // ---------------------------------- FUNKCJE WYSZUKIWANIA W BAZIE DANYCH ----------------------------------
 
-void wyswietlWyszukanePokoje(Pokoj *&pokoj)
-{
+void wyswietlWyszukanePokoje(Pokoj *&pokoj) {
     cout << "---------------------------------------------------------------" << endl;
     cout << "Numer pokoju: " << pokoj->numer_pokoju << endl;
     cout << "Maksymalna ilosc osobo: " << pokoj->maksymalna_ilosc_osob << endl;
 
     cout << "Czy dostepna lazienka: ";
-    if (pokoj->lazienka == 1) cout << "prawda" << endl;
+    if (pokoj->czy_lazienka == 1) cout << "prawda" << endl;
     else cout << "falsz" << endl;
 
     cout << "Cena pokoju: " << pokoj->cena_pokoju << endl;
@@ -301,10 +297,8 @@ void wyswietlWyszukanePokoje(Pokoj *&pokoj)
 
 }
 
-void database::wyszukajPoNumerzePokoju()
-{
+void database::wyszukajPoNumerzePokoju() {
     system("cls");
-
     if (!sprawdzCzyBazaDanychJestPusta()) return;
 
     string szukany_numer_pokoju;
@@ -317,18 +311,15 @@ void database::wyszukajPoNumerzePokoju()
     int liczba_znalezionych_pokoi = 0;
 
     // wyszukiwanie pokoju w bazie danych
-    while (temp)
-    {
-        if (temp->numer_pokoju == stoi(szukany_numer_pokoju))
-        {
+    while (temp) {
+        if (temp->numer_pokoju == stoi(szukany_numer_pokoju)) {
             wyswietlWyszukanePokoje(temp);
             liczba_znalezionych_pokoi++;
         }
         temp = temp->nastepny_pokoj;
     }
     // sprawdzenie czy znaleziono jakies pokoje jezeli nie wyswietla odpowiedni komunikat
-    if (liczba_znalezionych_pokoi == 0)
-    {
+    if (liczba_znalezionych_pokoi == 0) {
         cout << "Nie znaleziono zadnych pokoi o podanym numerze" << endl;
         cout << "Wcisnij enter aby kontynuowac" << endl;
     }
@@ -336,9 +327,10 @@ void database::wyszukajPoNumerzePokoju()
 
 }
 
-void database::wyszukajPoImieniuINazwisku()
-{
+void database::wyszukajPoImieniuINazwisku() {
     system("cls");
+    if (!sprawdzCzyBazaDanychJestPusta()) return;
+
     string szukane_imie_nazwisko;
     cout << "Podaj imie i nazwisko: ";
     cin.clear();
@@ -350,18 +342,15 @@ void database::wyszukajPoImieniuINazwisku()
     int liczba_znalezionych_pokoi = 0;
 
     // wyszukiwanie pokoju w bazie danych
-    while (temp)
-    {
-        if (temp->imie_nazwisko == szukane_imie_nazwisko)
-        {
+    while (temp) {
+        if (temp->imie_nazwisko == szukane_imie_nazwisko) {
             wyswietlWyszukanePokoje(temp);
             liczba_znalezionych_pokoi++;
         }
         temp = temp->nastepny_pokoj;
     }
     // sprawdzenie czy znaleziono jakies pokoje jezeli nie wyswietla odpowiedni komunikat
-    if (liczba_znalezionych_pokoi == 0)
-    {
+    if (liczba_znalezionych_pokoi == 0) {
         cout << "Nie znaleziono zadnych pokoi o podanym numerze" << endl;
         cout << "Wcisnij enter aby kontynuowac" << endl;
 
@@ -369,14 +358,14 @@ void database::wyszukajPoImieniuINazwisku()
     system("pause>0");
 }
 
-void database::wyszukajZaPomocaWyrazenRegularnych()
-{
+void database::wyszukajZaPomocaWyrazenRegularnych() {
     system("cls");
+    if (!sprawdzCzyBazaDanychJestPusta()) return; // sprawdzenie czy baza danych jest pusta
+
     string wyrazenie_regularne;
     bool czy_poprawne = false;
     // wprowadzenie wyraznia regularnego przez uzytkownika oraz sprawdzenie czy jest ono poprawne
-    do
-    {
+    do {
         cout << "Podaj wyrazenie regularne: ";
         cin >> wyrazenie_regularne;
         czy_poprawne = czyPoprawneWyrazenie(wyrazenie_regularne);
@@ -389,9 +378,8 @@ void database::wyszukajZaPomocaWyrazenRegularnych()
 
     std::regex wzor(wyrazenie_regularne);
     string lazienka, posilki;
-    while (temp)
-    {
-        if (temp->lazienka) lazienka == "prawda";
+    while (temp) {
+        if (temp->czy_lazienka) lazienka == "prawda";
         else lazienka = "falsz";
 
         if (temp->czy_posilki) posilki = "prawda";
@@ -399,26 +387,25 @@ void database::wyszukajZaPomocaWyrazenRegularnych()
 
         // sprawdzenie cyz jaka kolwiek wartosc pokoju pasuje do wprowadzonego wyrazenia regularnego
         if (regex_match(to_string(temp->numer_pokoju), wzor) ||
-                regex_match(to_string(temp->maksymalna_ilosc_osob), wzor) ||
-                regex_match(to_string(temp->cena_pokoju), wzor) ||
-                regex_match(temp->imie_nazwisko, wzor) ||
-                regex_match(to_string(temp->nr_telefonu), wzor) ||
-                regex_match(temp->data_rozpoczecia, wzor) ||
-                regex_match(temp->data_zakonczenia, wzor) ||
-                regex_match(lazienka, wzor) ||
-                regex_match(posilki, wzor))
-        {
+            regex_match(to_string(temp->maksymalna_ilosc_osob), wzor) ||
+            regex_match(to_string(temp->cena_pokoju), wzor) ||
+            regex_match(temp->imie_nazwisko, wzor) ||
+            regex_match(to_string(temp->nr_telefonu), wzor) ||
+            regex_match(temp->data_rozpoczecia, wzor) ||
+            regex_match(temp->data_zakonczenia, wzor) ||
+            regex_match(lazienka, wzor) ||
+            regex_match(posilki, wzor)) {
             wyswietlWyszukanePokoje(temp);
             ile_znalezionych_pokoi++;
         }
         temp = temp->nastepny_pokoj;
     }
     // sprawdzenie czy znaleziono jakies pokoje jezeli nie wyswietla odpowiedni komunikat
-    if (ile_znalezionych_pokoi == 0)
-    {
+    if (ile_znalezionych_pokoi == 0) {
         cout << "Nie znaleziono zadnych pokoi o podanym numerze" << endl;
-        cout << "Wcisnij enter aby kontynuowac" << endl;
     }
+
+    cout << "Wcisnij enter aby kontynuowac" << endl;
     system("pause>0");
 }
 
@@ -456,8 +443,8 @@ void database::dodajPokoj() {
 
     nowy_pokoj->maksymalna_ilosc_osob = stoi(checkValid("^[0-9]+$", "Podano zle dane, sprobuj ponownie",
                                                         "Podaj maksymalna ilosc osob (dodatnia liczba calkowita): "));
-    nowy_pokoj->lazienka = stoi(checkValid("^[01]$", "Podano zle dane, sprobuj ponownie",
-                                           "Czy dostepna jest lazienka: (1 jezeli tak 0 jezeli nie): "));
+    nowy_pokoj->czy_lazienka = stoi(checkValid("^[01]$", "Podano zle dane, sprobuj ponownie",
+                                               "Czy dostepna jest lazienka: (1 jezeli tak 0 jezeli nie): "));
     nowy_pokoj->cena_pokoju = stof(checkValid("^[0-9]+(\\.[0-9]+)?$", "Podano zle dane, sprobuj ponownie",
                                               "Podaj cene pokoju (liczba dodatnia): "));
     nowy_pokoj->imie_nazwisko = checkFirstNameAndLastName();
@@ -470,13 +457,13 @@ void database::dodajPokoj() {
         nowy_pokoj->data_zakonczenia = " ";
     } else {
         nowy_pokoj->nr_telefonu = stoi(checkValid("^\\d{9}$", "Podano zle dane, sprobuj ponownie",
-                                                        "Podaj numer telefonu (w formacie xxxxxxxxx): "));
+                                                  "Podaj numer telefonu (w formacie xxxxxxxxx): "));
         nowy_pokoj->data_rozpoczecia = checkValid("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$",
-                                                 "Podano zle dane, sprobuj ponownie",
-                                                 "Podaj date rozpoczecia pobytu (w formacie rrrr-mm-dd): ");
+                                                  "Podano zle dane, sprobuj ponownie",
+                                                  "Podaj date rozpoczecia pobytu (w formacie rrrr-mm-dd): ");
         nowy_pokoj->data_zakonczenia = checkValid("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$",
-                                                 "Podano zle dane, sprobuj ponownie",
-                                                 "Podaj date zakonczenia pobytu (w formacie rrrr-mm-dd): ");
+                                                  "Podano zle dane, sprobuj ponownie",
+                                                  "Podaj date zakonczenia pobytu (w formacie rrrr-mm-dd): ");
     }
     nowy_pokoj->czy_posilki = stoi(checkValid("^[01]$", "Podano zle dane, sprobuj ponownie",
                                               "Czy dostepne sa posilki: (1 jezeli tak 0 jezeli nie): "));
@@ -496,7 +483,7 @@ void database::dodajPokoj() {
     }
 }
 
-void database::wyswietlWolnePokojeIDodaIchNumeryDoTablicy(vector<int> &numery) {
+void database::wyswietlWolnePokojeIDodajIchNumeryDoTablicy(vector<int> &numery) {
 
     Pokoj *temp = pierwszy_pokoj;
 
@@ -512,7 +499,7 @@ void database::wyswietlWolnePokojeIDodaIchNumeryDoTablicy(vector<int> &numery) {
             cout << "Maksymana ilosc osob: " << temp->maksymalna_ilosc_osob << endl;
 
             cout << "lazienka: ";
-            if (temp->lazienka) cout << "prawda" << endl;
+            if (temp->czy_lazienka) cout << "prawda" << endl;
             else cout << "falsz" << endl;
 
             cout << "Cena pokoju: " << temp->cena_pokoju << endl;
@@ -547,7 +534,7 @@ void database::wynajmijPokoj() {
     vector<int> numery_pokoi;
 
     // wyswietlenie wolych pokoi i dodanie ich numerow do listy
-    wyswietlWolnePokojeIDodaIchNumeryDoTablicy(numery_pokoi);
+    wyswietlWolnePokojeIDodajIchNumeryDoTablicy(numery_pokoi);
 
     // sprawdza czy w bazie danych są pokoje do wynajecia
     if (numery_pokoi.empty()) {
@@ -578,24 +565,24 @@ void database::wynajmijPokoj() {
     } while (!czy_mozliwy_do_wynajecia);
 
     Pokoj *temp = pierwszy_pokoj;
-    // przejscie do pokoju ktory ma wybrany przez urzytkownika numer
+    // przejscie do pokoju ktory ma wybrany przez uzytkownika numer
     while (temp->numer_pokoju != numer_pokoju_do_wynajecia) {
         temp = temp->nastepny_pokoj;
     }
 
     system("cls");
 
-    // wprowadzenie danych osoby wynajmujacej
+    // wprowadzenie przez uzytkownika danych osoby wynajmujacej
     cout << "---------------------- Podaj dane ----------------------" << endl;
     temp->imie_nazwisko = checkFirstAndLastNameGettering();
     temp->nr_telefonu = stoi(checkValid("^\\d{9}$", "Podano zle dane, sprobuj ponownie",
-                                              "Podaj numer telefonu (w formacie xxxxxxxxx): "));
+                                        "Podaj numer telefonu (w formacie xxxxxxxxx): "));
     temp->data_rozpoczecia = checkValid("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$",
-                                       "Podano zle dane, sprobuj ponownie",
-                                       "Podaj date rozpoczecia pobytu (w formacie rrrr-mm-dd): ");
+                                        "Podano zle dane, sprobuj ponownie",
+                                        "Podaj date rozpoczecia pobytu (w formacie rrrr-mm-dd): ");
     temp->data_zakonczenia = checkValid("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$",
-                                       "Podano zle dane, sprobuj ponownie",
-                                       "Podaj date zakonczenia pobytu (w formacie rrrr-mm-dd): ");
+                                        "Podano zle dane, sprobuj ponownie",
+                                        "Podaj date zakonczenia pobytu (w formacie rrrr-mm-dd): ");
 
     system("cls");
     cout << "Wynajecie pokoju przebieglo pomyslnie. Zyczymy udanego pobytu" << endl;
@@ -605,8 +592,8 @@ void database::wynajmijPokoj() {
 
 
 void database::zmienDanePokoju() {
-    // sprawdzenie czy w bazie danych sa rekordy
     system("cls");
+    // sprawdzenie czy w bazie danych sa rekordy
     if (!sprawdzCzyBazaDanychJestPusta()) return;
 
     Pokoj *temp = pierwszy_pokoj;
@@ -644,10 +631,10 @@ void database::zmienDanePokoju() {
                                                                    "Maksymalna ilosc osob (dodatnia liczba calkowita): ",
                                                                    tempStringValue));
 
-            tempStringValue = to_string(temp->lazienka);
-            temp->lazienka = stoi(checkValidEditValue("^[01]$", "Wystapil blad sprobuj ponownie",
-                                                      "Czy dostepna jest lazienka (1 jezeli tak 0 jezeli nie): ",
-                                                      tempStringValue));
+            tempStringValue = to_string(temp->czy_lazienka);
+            temp->czy_lazienka = stoi(checkValidEditValue("^[01]$", "Wystapil blad sprobuj ponownie",
+                                                          "Czy dostepna jest lazienka (1 jezeli tak 0 jezeli nie): ",
+                                                          tempStringValue));
 
             tempStringValue = to_string(temp->cena_pokoju);
             temp->cena_pokoju = stof(checkValidEditValue("^[0-9]+(\\.[0-9]+)?$", "Wystapil blad sprobuj ponownie",
@@ -676,6 +663,7 @@ void database::zmienDanePokoju() {
                                                          "Czy dostepne sa posilki (1 jezeli tak 0 jezeli nie): ",
                                                          tempStringValue));
 
+            system("cls");
             cout << "Dane zostaly zmienione posmyslne" << endl;
             cout << "Wcisnij enter aby kontynuowac" << endl;
             system("pause>0");
@@ -769,13 +757,12 @@ void database::wyswietlBazeDanych() {
         cout << "Maksymana ilosc osob: " << temp->maksymalna_ilosc_osob << endl;
 
         cout << "lazienka: ";
-        if (temp->lazienka) cout << "prawda" << endl;
+        if (temp->czy_lazienka) cout << "prawda" << endl;
         else cout << "falsz" << endl;
 
         cout << "Cena pokoju: " << temp->cena_pokoju << endl;
 
         cout << "Imie i Nazwisko: " << temp->imie_nazwisko << endl;
-
         if (temp->nr_telefonu == 0) cout << "Nr. telefonu: " << endl;
         else cout << "Nr.telefonu: " << temp->nr_telefonu << endl;
 
@@ -820,29 +807,32 @@ void database::zapiszBazeDanych() {
     // zamkniecie pliku sprawdzajacego czy istnieje juz plik o takiej nazwie
     file.close();
 
-    fstream database_file("../save_databases/" + database_name, ios::out);
-    string database_record = "";
+    fstream database_file("save_databases/" + database_name, ios::out);
+    string rekord_bazy_danych = "";
 
     while (temp) {
-        database_record += to_string(temp->numer_pokoju) + ";";
-        database_record += to_string(temp->maksymalna_ilosc_osob) + ";";
-        database_record += to_string(temp->lazienka) + ";";
-        database_record += to_string(temp->cena_pokoju) + ";";
-        database_record += temp->imie_nazwisko + ";";
-        // sprawdzenie czy numer telefonu jest rowny 0 co oznacza ze jest pusty jezeli tak do pliku wpisywana jest spacja w przeciwnym razie numer telefonu
-        if (temp->nr_telefonu == 0) database_record += " ;";
-        else database_record += to_string(temp->nr_telefonu) + ";";
+        rekord_bazy_danych += to_string(temp->numer_pokoju) + ";";
+        rekord_bazy_danych += to_string(temp->maksymalna_ilosc_osob) + ";";
+        rekord_bazy_danych += to_string(temp->czy_lazienka) + ";";
+        rekord_bazy_danych += to_string(temp->cena_pokoju) + ";";
+        rekord_bazy_danych += temp->imie_nazwisko + ";";
 
-        database_record += temp->data_rozpoczecia + ";";
-        database_record += temp->data_zakonczenia + ";";
-        database_record += to_string(temp->czy_posilki) + "\n";
+        // sprawdzenie czy numer telefonu jest rowny 0 co oznacza ze jest pusty jezeli tak do pliku wpisywana jest spacja w przeciwnym razie numer telefonu
+        if (temp->nr_telefonu == 0) rekord_bazy_danych += " ;";
+        else rekord_bazy_danych += to_string(temp->nr_telefonu) + ";";
+
+        rekord_bazy_danych += temp->data_rozpoczecia + ";";
+        rekord_bazy_danych += temp->data_zakonczenia + ";";
+        rekord_bazy_danych += to_string(temp->czy_posilki) + "\n";
 
         // wpisanie do pliku rekordu
-        database_file << database_record;
-        database_record = "";
+        database_file << rekord_bazy_danych;
+        rekord_bazy_danych = "";
         temp = temp->nastepny_pokoj;
     }
     database_file.close();
+
+
     system("cls");
     cout << "Baza danych zostala zapisana pomyslnie w folderze 'save_databases'" << endl;
     cout << "\nWcisnij enter aby kontynuowac" << endl;
@@ -853,6 +843,7 @@ void database::zapiszBazeDanych() {
 void database::wczytajBazeDanych() {
 
     system("cls");
+
     pierwszy_pokoj = nullptr;
     string file_path;
     fstream database_file;
@@ -877,7 +868,7 @@ void database::wczytajBazeDanych() {
 
         nowy_pokoj->numer_pokoju = stoi(tablica_wartosci[0]);
         nowy_pokoj->maksymalna_ilosc_osob = stoi(tablica_wartosci[1]);
-        nowy_pokoj->lazienka = stringToBoolConvert(tablica_wartosci[2]);
+        nowy_pokoj->czy_lazienka = stringToBoolConvert(tablica_wartosci[2]);
         nowy_pokoj->cena_pokoju = stof(tablica_wartosci[3]);
         nowy_pokoj->imie_nazwisko = tablica_wartosci[4];
 
@@ -904,10 +895,11 @@ void database::wczytajBazeDanych() {
         }
     }
 
+    // zamkniecie pliku bazodanowego
     database_file.close();
 
     system("cls");
     cout << "Udalo sie wczytac baze danych" << endl;
-    cout << "Wcisnij enter aby kontynuowac"  << endl;
+    cout << "Wcisnij enter aby kontynuowac" << endl;
     system("pause>0");
 }

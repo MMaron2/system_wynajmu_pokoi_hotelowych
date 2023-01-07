@@ -7,17 +7,17 @@
 // struktura rekurdu w bazie danych
 struct Pokoj
 {
-    int numer_pokoju;
-    int maksymalna_ilosc_osob;
-    bool lazienka;
-    float cena_pokoju;
-    std::string imie_nazwisko;
-    int nr_telefonu;
+    int numer_pokoju; // dodatnia liczba calkowita. przyjmuje ze jest to klucz glowny calej bazy danych wiec musi byc nukatowy
+    int maksymalna_ilosc_osob; // dodatnia liczba calkowita
+    bool czy_lazienka; // wartosc true/false
+    float cena_pokoju; // dodadnia liczba zmiennoprzecinkoa
+    std::string imie_nazwisko; // dowolny ciag znakow
+    int nr_telefonu; // dodatnia liczba calkowita w formacie xxxxxxxxx
     std::string data_rozpoczecia; // rrrr.mm.dd
     std::string data_zakonczenia; // rrrr.mm.dd
     bool czy_posilki; // jezeli pokoj nie jest wynajety to falsz
 
-    Pokoj* nastepny_pokoj;
+    Pokoj* nastepny_pokoj; // wskaznik na nastepny pokoj
 
     Pokoj(); // konstruktor
 };
@@ -26,7 +26,7 @@ struct Pokoj
 // glowna struktura
 struct database
 {
-    Pokoj *pierwszy_pokoj;
+    Pokoj *pierwszy_pokoj; // wskaznik na pierwszy pokoj w liscie
     // funkcja dodaje pokoj do bazdy danych
     // sprawdza czy uzytkownik dodaje drugi pokoj o takim smaymu numerze
     // jezeli tak to zwraca blad i prosi o wybranie innego numeru
@@ -48,10 +48,10 @@ struct database
     void wyszukajZaPomocaWyrazenRegularnych();
     // wyswietla pokoje do wynajęcia
     // i dodaje ich numery do tablicy typu vector aby sprawdzic czy uzytkownik wybiera pokoj ktory jest mozliwy do wyboru
-    void wyswietlWolnePokojeIDodaIchNumeryDoTablicy(std::vector <int> &numery);
-    // funkcja zapisuje baze danych do pliku
-    void zapiszBazeDanych(); // do zrobienia
-    // funkcja wczytuje baze danych z pliku
+    void wyswietlWolnePokojeIDodajIchNumeryDoTablicy(std::vector <int> &numery);
+    // funkcja zapisuje baze danych do pliku w folderze save_databases
+    void zapiszBazeDanych();
+    // funkcja wczytuje baze danych z pliku z dowolnego miejsca na dysku
     void wczytajBazeDanych();
     // funkcja sprawdza czy baza danych jest pusta
     // jezeli tak wyswietla odowiedni komunikat
@@ -64,16 +64,20 @@ struct database
 //funkcja generujaca menu glowne
 void generateMainMenu();
 
-//wygenerowanie opcij dzialan na bazie danych po wybraniu przez uzytkownika odpowiedniej opcji
+//wygenerowanie menu dzialan na bazie danych wraz z menu opcji i odwolaniami do funkcji
+// przyjmuje obiekt struktury pokoje jako argument
 void databaseOptionsMenu(database *&pokoje);
 
-//wygenerowanie opcji importu i exportu
+//wygenerowanie menu importu i eksportu wraz z menu opcji i odwolaniami do funkcji
+// przyjmuje obiekt struktury pokoje jako argument
 void importExportMenu(database *&pokoje);
 
-//wygenerowanie opcji wyszukiwania
+//wygenerowanie menu wyszukiwania wraz z menu opcji i odwolaniami do funkcji
+// przyjmuje obiekt struktury pokoje jako argument
 void searchMenu(database *&pokoje);
 
 //funckja rozdziela jeden wiersz na poszczegolne wartosc rozdzielone srednikami
+// zmienna przekazana referencyjnie do zmiennej przechowuje pojedynczy wyraz
 void splitString(std::string &rekord, std::string tab[]);
 
 // funkcja zamenia string true/false na bool true/false
@@ -103,5 +107,6 @@ std::string checkFisrstNameAndLastNameEditValue(std::string previousValue);
 // jezeli tak zwraca true jezeli nie false
 bool czyPoprawneWyrazenie(std::string &wyrazenie);
 
+// funkcja wyswietla wyszukane pokoje w bazie danych pasujace do podanych przez uzytkownika wartosci
 void wyswietlWyszukanePokoje(Pokoj *&pokoj);
 
