@@ -5,6 +5,7 @@
 #include <regex>
 #include "header.h"
 #include <vector>
+#include <cmath>
 
 using namespace std;
 
@@ -413,7 +414,7 @@ void database::wyszukajZaPomocaWyrazenRegularnych() {
 void database::dodajPokoj() {
     system("cls");
     int nr_pokoju;
-    bool czy_istnieje = true;
+    bool czy_istnieje_pokoj_o_takim_numerze = true;
 
     Pokoj *nowy_pokoj = new Pokoj;
 
@@ -430,14 +431,14 @@ void database::dodajPokoj() {
                                         "Podaj numer pokoju (dodatnia liczba calkowita): "));
             while (temp) {
                 if (temp->numer_pokoju == nr_pokoju) {
-                    czy_istnieje = true;
+                    czy_istnieje_pokoj_o_takim_numerze = true;
                     cout << "taki pokoj juz istnieje wpisz inny numer" << endl;
                     break;
                 }
                 temp = temp->nastepny_pokoj;
-                if (temp == nullptr) czy_istnieje = false;
+                if (temp == nullptr) czy_istnieje_pokoj_o_takim_numerze = false;
             }
-        } while (czy_istnieje);
+        } while (czy_istnieje_pokoj_o_takim_numerze);
         nowy_pokoj->numer_pokoju = nr_pokoju;
     }
 
@@ -552,11 +553,11 @@ void database::wynajmijPokoj() {
     do {
         numer_pokoju_do_wynajecia = stoi(checkValid("^[0-9]+$", "Wystapil blad sprobuj ponownie",
                                                     "\nPodaj numer pokoju ktory chcesz wynajac (mozna wybrac tylko jeden z wyswietlonych pokoi): "));
-        for (int i = 0; i < numery_pokoi.size(); i++) {
+        for (int i : numery_pokoi) {
             // sprawdzenie czy numer pokoju znajduje sie w tablicy
             // jezeli tak to mozliwy jest wynajem
             // jezeli nie to prosi o wprowadzeniu numeru jeszcze raz
-            if (numery_pokoi[i] == numer_pokoju_do_wynajecia) czy_mozliwy_do_wynajecia = true;
+            if (i == numer_pokoju_do_wynajecia) czy_mozliwy_do_wynajecia = true;
             else {
                 cout << "Pokoj niemozliwy do wynajecia. Wybierz jeden numer pokoju z podanych pokoi" << endl;
             }

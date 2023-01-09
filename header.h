@@ -83,7 +83,7 @@ void splitString(std::string &rekord, std::string tab[]);
 // funkcja zamenia string true/false na bool true/false
 bool stringToBoolConvert(std::string &record);
 
-// funkcja sprawdzająca poprawność wpisanych przez użytkownika danych
+// funkcja sprawdzająca zgodność z wyrazeniem regularnym wpisanych przez użytkownika danych
 // zwraca wartosc string jezeli zgadza sie z patternem podanym jako argument funkkcji
 std::string checkValid(std::string pattern, std::string failInfo, std::string whatToInsertInformation);
 
