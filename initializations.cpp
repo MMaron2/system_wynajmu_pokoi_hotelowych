@@ -5,8 +5,8 @@
 #include <regex>
 #include "header.h"
 #include <vector>
-#include <cmath>
 #include <ctime>
+
 
 using namespace std;
 
@@ -243,15 +243,6 @@ std::string checkValidEditValue(std::string pattern, std::string failInfo, std::
     return to_check;
 }
 
-bool czyPoprawneWyrazenie(string &wyrazenie) {
-    try {
-        regex wyrazenie_do_sprawdzenia(wyrazenie);
-    } catch (const std::regex_error &e) {
-        cout << "Wyrazenie regularne jest niepoprawne" << endl;
-        return false;
-    }
-    return true;
-}
 
 // ------------------------------- FUNKJE OPIERACJI NA STRINGACH -------------------------------
 
@@ -367,11 +358,7 @@ void database::wyszukajZaPomocaWyrazenRegularnych() {
     string wyrazenie_regularne;
     bool czy_poprawne = false;
     // wprowadzenie wyraznia regularnego przez uzytkownika oraz sprawdzenie czy jest ono poprawne
-//    do {
-//        cout << "Podaj wyrazenie regularne: ";
-//        cin >> wyrazenie_regularne;
-//        czy_poprawne = czyPoprawneWyrazenie(wyrazenie_regularne);
-//    } while (!czy_poprawne);
+
     cout << "Podaj ciag znakow ktory ma zostac wyszukany: ";
     cin.clear();
     cin.ignore(1000, '\n');
@@ -536,6 +523,33 @@ void database::wyswietlWolnePokojeIDodajIchNumeryDoTablicy(vector<int> &numery) 
 }
 
 
+bool sprawdzPoprawnoscDatyZakonczenia(std::string data_rozpoczecia, std::string data_zakonczenia)
+{
+
+    int rok_r, rok_z;
+    int mies_r, mies_z;
+    int dzien_r, dzien_z;
+
+    // rozdzielenie daty na poszczegolne czesci
+    rok_r = stoi(data_rozpoczecia.substr(0,4));
+    rok_z = stoi(data_zakonczenia.substr(0,4));
+
+    mies_r = stoi(data_rozpoczecia.substr(5,7));
+    mies_z = stoi(data_zakonczenia.substr(5,7));
+
+    dzien_r = stoi(data_rozpoczecia.substr(8,10));
+    dzien_z = stoi(data_zakonczenia.substr(8,10));
+
+    // sprawdzenie czy nie podajemy przeszlego roku
+    if (rok_r < rok_z) return true;
+    if (rok_r == rok_z && mies_z > mies_r) return true;
+    if (rok_r == rok_z && mies_r == mies_z && dzien_z > dzien_r) return true;
+
+    cout << "wystapil blad" << endl;
+    return false;
+}
+
+
 void database::wynajmijPokoj() {
     system("cls");
 
@@ -586,17 +600,29 @@ void database::wynajmijPokoj() {
 
     system("cls");
 
+    int aktualny_rok = 2023;
+    string data_rozpoczecia, data_zakonczenia;
+
     // wprowadzenie przez uzytkownika danych osoby wynajmujacej
     cout << "---------------------- Podaj dane ----------------------" << endl;
     temp->imie_nazwisko = checkFirstAndLastNameGettering();
     temp->nr_telefonu = stoi(checkValid("^\\d{9}$", "Podano zle dane, sprobuj ponownie",
                                         "Podaj numer telefonu (w formacie xxxxxxxxx): "));
-    temp->data_rozpoczecia = checkValid("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$",
-                                        "Podano zle dane, sprobuj ponownie",
-                                        "Podaj date rozpoczecia pobytu (w formacie rrrr-mm-dd): ");
-    temp->data_zakonczenia = checkValid("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$",
-                                        "Podano zle dane, sprobuj ponownie",
-                                        "Podaj date zakonczenia pobytu (w formacie rrrr-mm-dd): ");
+    // wpisanie i walidacja daty
+    do
+    {
+        data_rozpoczecia = checkValid("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$", "Podano zle dane, sprobuj ponownie", "Podaj date rozpoczecia pobytu (w formacie rrrr-mm-dd): ");
+        if (stoi(data_rozpoczecia.substr(0,4)) < aktualny_rok) cout << "wystapil blad, podaj date z aktualnym rokiem" << endl;
+    } while (stoi(data_rozpoczecia.substr(0,4)) < aktualny_rok);
+    temp->data_rozpoczecia = data_rozpoczecia;
+
+
+
+    do
+    {
+        data_zakonczenia = checkValid("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$", "Podano zle dane, sprobuj ponownie", "Podaj date zakonczenia pobytu (w formacie rrrr-mm-dd): ");
+    } while (!sprawdzPoprawnoscDatyZakonczenia(temp->data_rozpoczecia, data_zakonczenia));
+
 
     system("cls");
     cout << "Wynajecie pokoju przebieglo pomyslnie. Zyczymy udanego pobytu" << endl;

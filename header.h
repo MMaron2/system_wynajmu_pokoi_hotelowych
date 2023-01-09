@@ -110,3 +110,7 @@ bool czyPoprawneWyrazenie(std::string &wyrazenie);
 // funkcja wyswietla wyszukane pokoje w bazie danych pasujace do podanych przez uzytkownika wartosci
 void wyswietlWyszukanePokoje(Pokoj *&pokoj);
 
+std::string pobierzAktualnyCzasIZamienNaString();
+
+bool sprawdzPoprawnoscDatyZakonczenia(std::string data_rozpoczecia, std::string data_zakonczenia);
+
