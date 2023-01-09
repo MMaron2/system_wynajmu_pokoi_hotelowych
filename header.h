@@ -44,7 +44,7 @@ struct database
     void wyszukajPoNumerzePokoju();
     // funkcja wyszukuje pokoje w liscie o podanym imieniu i nazwisku oraz go wysweitla
     void wyszukajPoImieniuINazwisku();
-    // funkcja wszukuje wszystkie pokokje ktorych jakas wartosc pasuje do podanego wyrazenia regularnego oraz je wyswietl
+    // funkcja wszukuje wszystkie pokokje ktorych jakas wartosc pasuje do podanego ciagu znakow oraz je wyswietl
     void wyszukajZaPomocaWyrazenRegularnych();
     // wyswietla pokoje do wynajęcia
     // i dodaje ich numery do tablicy typu vector aby sprawdzic czy uzytkownik wybiera pokoj ktory jest mozliwy do wyboru

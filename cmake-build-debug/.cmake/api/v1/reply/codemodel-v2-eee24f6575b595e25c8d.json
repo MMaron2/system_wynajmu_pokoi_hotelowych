@@ -1,0 +1,60 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.23"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "system_pokoje_hotelowe",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "system_pokoje_hotelowe::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-system_pokoje_hotelowe-Debug-7094b1d61e3fc73f938f.json",
+					"name" : "system_pokoje_hotelowe",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/mateu/OneDrive/Pulpit/programowanieCpp/system_pokoje_hotelowe/cmake-build-debug",
+		"source" : "C:/Users/mateu/OneDrive/Pulpit/programowanieCpp/system_pokoje_hotelowe"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 4
+	}
+}

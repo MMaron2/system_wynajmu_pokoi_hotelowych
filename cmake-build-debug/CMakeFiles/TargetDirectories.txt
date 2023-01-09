@@ -1,0 +1,3 @@
+C:/Users/mateu/OneDrive/Pulpit/programowanieCpp/system_pokoje_hotelowe/cmake-build-debug/CMakeFiles/system_pokoje_hotelowe.dir
+C:/Users/mateu/OneDrive/Pulpit/programowanieCpp/system_pokoje_hotelowe/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/mateu/OneDrive/Pulpit/programowanieCpp/system_pokoje_hotelowe/cmake-build-debug/CMakeFiles/rebuild_cache.dir

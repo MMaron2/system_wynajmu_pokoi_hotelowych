@@ -6,6 +6,7 @@
 #include "header.h"
 #include <vector>
 #include <cmath>
+#include <ctime>
 
 using namespace std;
 
@@ -352,7 +353,7 @@ void database::wyszukajPoImieniuINazwisku() {
     }
     // sprawdzenie czy znaleziono jakies pokoje jezeli nie wyswietla odpowiedni komunikat
     if (liczba_znalezionych_pokoi == 0) {
-        cout << "Nie znaleziono zadnych pokoi o podanym numerze" << endl;
+        cout << "Nie znaleziono zadnych pokoi o podanym imieniu i nazwisku" << endl;
         cout << "Wcisnij enter aby kontynuowac" << endl;
 
     }
@@ -366,11 +367,16 @@ void database::wyszukajZaPomocaWyrazenRegularnych() {
     string wyrazenie_regularne;
     bool czy_poprawne = false;
     // wprowadzenie wyraznia regularnego przez uzytkownika oraz sprawdzenie czy jest ono poprawne
-    do {
-        cout << "Podaj wyrazenie regularne: ";
-        cin >> wyrazenie_regularne;
-        czy_poprawne = czyPoprawneWyrazenie(wyrazenie_regularne);
-    } while (!czy_poprawne);
+//    do {
+//        cout << "Podaj wyrazenie regularne: ";
+//        cin >> wyrazenie_regularne;
+//        czy_poprawne = czyPoprawneWyrazenie(wyrazenie_regularne);
+//    } while (!czy_poprawne);
+    cout << "Podaj ciag znakow ktory ma zostac wyszukany: ";
+    cin.clear();
+    cin.ignore(1000, '\n');
+    getline(cin, wyrazenie_regularne);
+
 
     Pokoj *temp = pierwszy_pokoj;
     int ile_znalezionych_pokoi = 0;
@@ -387,15 +393,16 @@ void database::wyszukajZaPomocaWyrazenRegularnych() {
         else posilki = "falsz";
 
         // sprawdzenie cyz jaka kolwiek wartosc pokoju pasuje do wprowadzonego wyrazenia regularnego
-        if (regex_match(to_string(temp->numer_pokoju), wzor) ||
-            regex_match(to_string(temp->maksymalna_ilosc_osob), wzor) ||
-            regex_match(to_string(temp->cena_pokoju), wzor) ||
-            regex_match(temp->imie_nazwisko, wzor) ||
-            regex_match(to_string(temp->nr_telefonu), wzor) ||
-            regex_match(temp->data_rozpoczecia, wzor) ||
-            regex_match(temp->data_zakonczenia, wzor) ||
-            regex_match(lazienka, wzor) ||
-            regex_match(posilki, wzor)) {
+        if (regex_search(to_string(temp->numer_pokoju), wzor) ||
+            regex_search(to_string(temp->maksymalna_ilosc_osob), wzor) ||
+            regex_search(to_string(temp->cena_pokoju), wzor) ||
+            regex_search(temp->imie_nazwisko, wzor) ||
+            regex_search(to_string(temp->nr_telefonu), wzor) ||
+            regex_search(temp->data_rozpoczecia, wzor) ||
+            regex_search(temp->data_zakonczenia, wzor) ||
+            regex_search(lazienka, wzor) ||
+            regex_search(posilki, wzor))
+        {
             wyswietlWyszukanePokoje(temp);
             ile_znalezionych_pokoi++;
         }
@@ -403,7 +410,11 @@ void database::wyszukajZaPomocaWyrazenRegularnych() {
     }
     // sprawdzenie czy znaleziono jakies pokoje jezeli nie wyswietla odpowiedni komunikat
     if (ile_znalezionych_pokoi == 0) {
-        cout << "Nie znaleziono zadnych pokoi o podanym numerze" << endl;
+        cout << "Nie znaleziono zadnych pokoi pasujacych do wyrazenia regularnego" << endl;
+    }
+    else
+    {
+        cout << "Znaleziono " << ile_znalezionych_pokoi << " rekordow" << endl;
     }
 
     cout << "Wcisnij enter aby kontynuowac" << endl;
@@ -558,11 +569,13 @@ void database::wynajmijPokoj() {
             // jezeli tak to mozliwy jest wynajem
             // jezeli nie to prosi o wprowadzeniu numeru jeszcze raz
             if (i == numer_pokoju_do_wynajecia) czy_mozliwy_do_wynajecia = true;
-            else {
-                cout << "Pokoj niemozliwy do wynajecia. Wybierz jeden numer pokoju z podanych pokoi" << endl;
-            }
         }
 
+        if (!czy_mozliwy_do_wynajecia)
+        {
+            cout << "Pokoj niemozliwy do wynajecia lub nie istnieje" << endl;
+            system("pause>0");
+        }
     } while (!czy_mozliwy_do_wynajecia);
 
     Pokoj *temp = pierwszy_pokoj;
@@ -846,11 +859,11 @@ void database::wczytajBazeDanych() {
     system("cls");
 
     pierwszy_pokoj = nullptr;
-    string file_path;
+    string file_path = "../save_databases/database.txt";
     fstream database_file;
     do {
-        cout << "Podaj sciezkie dostepu do pliku bazodanowego (txt): ";
-        cin >> file_path;
+//        cout << "Podaj sciezkie dostepu do pliku bazodanowego (txt): ";
+//        cin >> file_path;
 
         database_file.open(file_path, ios::in);
         if (!database_file.is_open()) {
@@ -867,19 +880,29 @@ void database::wczytajBazeDanych() {
 
         Pokoj *nowy_pokoj = new Pokoj;
 
-        nowy_pokoj->numer_pokoju = stoi(tablica_wartosci[0]);
-        nowy_pokoj->maksymalna_ilosc_osob = stoi(tablica_wartosci[1]);
-        nowy_pokoj->czy_lazienka = stringToBoolConvert(tablica_wartosci[2]);
-        nowy_pokoj->cena_pokoju = stof(tablica_wartosci[3]);
-        nowy_pokoj->imie_nazwisko = tablica_wartosci[4];
+        try
+        {
+            nowy_pokoj->numer_pokoju = stoi(tablica_wartosci[0]);
+            nowy_pokoj->maksymalna_ilosc_osob = stoi(tablica_wartosci[1]);
+            nowy_pokoj->czy_lazienka = stringToBoolConvert(tablica_wartosci[2]);
+            nowy_pokoj->cena_pokoju = stof(tablica_wartosci[3]);
+            nowy_pokoj->imie_nazwisko = tablica_wartosci[4];
 
-        if (tablica_wartosci[5] == " ") nowy_pokoj->nr_telefonu = 0;
-        else nowy_pokoj->nr_telefonu = stoi(tablica_wartosci[5]);
+            if (tablica_wartosci[5] == " ") nowy_pokoj->nr_telefonu = 0;
+            else nowy_pokoj->nr_telefonu = stoi(tablica_wartosci[5]);
 
-        nowy_pokoj->data_rozpoczecia = tablica_wartosci[6];
-        nowy_pokoj->data_zakonczenia = tablica_wartosci[7];
-        nowy_pokoj->czy_posilki = stringToBoolConvert(tablica_wartosci[8]);
+            nowy_pokoj->data_rozpoczecia = tablica_wartosci[6];
+            nowy_pokoj->data_zakonczenia = tablica_wartosci[7];
+            nowy_pokoj->czy_posilki = stringToBoolConvert(tablica_wartosci[8]);
 
+        }
+        catch (std::invalid_argument& e)
+        {
+            cerr << "Wystapil blad baza danych nie zostala wczytana" << endl;
+            cout << "Wcisnij enter aby kontynuowac" << endl;
+            system("pause>0");
+            return;
+        }
         // --------------- dodawanie dowego rekordu bazy danych -----------------------
         // sprawdzenie czy dodajemy pierwszy element
         if (pierwszy_pokoj == nullptr) pierwszy_pokoj = nowy_pokoj;
