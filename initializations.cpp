@@ -5,7 +5,6 @@
 #include <regex>
 #include "header.h"
 #include <vector>
-#include <ctime>
 
 
 using namespace std;
@@ -173,6 +172,31 @@ void searchMenu(database *&pokoje) {
     }
 }
 // ------------------------------------ FUNKJCE SPRAWDZAJACE ------------------------------------
+
+bool sprawdzPoprawnoscDatyZakonczenia(std::string data_rozpoczecia, std::string data_zakonczenia)
+{
+    int rok_r, rok_z;
+    int mies_r, mies_z;
+    int dzien_r, dzien_z;
+
+    // rozdzielenie daty na poszczegolne czesci
+    rok_r = stoi(data_rozpoczecia.substr(0,4));
+    rok_z = stoi(data_zakonczenia.substr(0,4));
+
+    mies_r = stoi(data_rozpoczecia.substr(5,7));
+    mies_z = stoi(data_zakonczenia.substr(5,7));
+
+    dzien_r = stoi(data_rozpoczecia.substr(8,10));
+    dzien_z = stoi(data_zakonczenia.substr(8,10));
+
+    // sprawdzenie czy nie podajemy przeszlego roku
+    if (rok_r < rok_z) return true;
+    if (rok_r == rok_z && mies_z > mies_r) return true;
+    if (rok_r == rok_z && mies_r == mies_z && dzien_z > dzien_r) return true;
+
+    cout << "wystapil blad" << endl;
+    return false;
+}
 
 bool database::sprawdzCzyBazaDanychJestPusta() {
     if (pierwszy_pokoj == nullptr) {
@@ -457,16 +481,25 @@ void database::dodajPokoj() {
     } else {
         nowy_pokoj->nr_telefonu = stoi(checkValid("^\\d{9}$", "Podano zle dane, sprobuj ponownie",
                                                   "Podaj numer telefonu (w formacie xxxxxxxxx): "));
-        nowy_pokoj->data_rozpoczecia = checkValid("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$",
-                                                  "Podano zle dane, sprobuj ponownie",
-                                                  "Podaj date rozpoczecia pobytu (w formacie rrrr-mm-dd): ");
-        nowy_pokoj->data_zakonczenia = checkValid("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$",
-                                                  "Podano zle dane, sprobuj ponownie",
-                                                  "Podaj date zakonczenia pobytu (w formacie rrrr-mm-dd): ");
+        // wpisanie i walidacja daty
+        string data_zakonczenia, data_rozpoczecia;
+        int aktualny_rok = 2023;
+        do
+        {
+            data_rozpoczecia = checkValid("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$", "Podano zle dane, sprobuj ponownie", "Podaj date rozpoczecia pobytu (w formacie rrrr-mm-dd): ");
+            if (stoi(data_rozpoczecia.substr(0,4)) < aktualny_rok) cout << "wystapil blad, podaj date z aktualnym rokiem" << endl;
+        } while (stoi(data_rozpoczecia.substr(0,4)) < aktualny_rok);
+        nowy_pokoj->data_rozpoczecia = data_rozpoczecia;
+
+        do
+        {
+            data_zakonczenia = checkValid("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$", "Podano zle dane, sprobuj ponownie", "Podaj date zakonczenia pobytu (w formacie rrrr-mm-dd): ");
+        } while (!sprawdzPoprawnoscDatyZakonczenia(nowy_pokoj->data_rozpoczecia, data_zakonczenia));
+        nowy_pokoj->data_zakonczenia = data_zakonczenia;
     }
+
     nowy_pokoj->czy_posilki = stoi(checkValid("^[01]$", "Podano zle dane, sprobuj ponownie",
                                               "Czy dostepne sa posilki: (1 jezeli tak 0 jezeli nie): "));
-
     // dodanie pokoju do listy
     if (pierwszy_pokoj == nullptr) pierwszy_pokoj = nowy_pokoj;
     else // przejscie na ostatni element listy i dodanie nowego elementu
@@ -520,33 +553,6 @@ void database::wyswietlWolnePokojeIDodajIchNumeryDoTablicy(vector<int> &numery) 
         }
         temp = temp->nastepny_pokoj;
     }
-}
-
-
-bool sprawdzPoprawnoscDatyZakonczenia(std::string data_rozpoczecia, std::string data_zakonczenia)
-{
-
-    int rok_r, rok_z;
-    int mies_r, mies_z;
-    int dzien_r, dzien_z;
-
-    // rozdzielenie daty na poszczegolne czesci
-    rok_r = stoi(data_rozpoczecia.substr(0,4));
-    rok_z = stoi(data_zakonczenia.substr(0,4));
-
-    mies_r = stoi(data_rozpoczecia.substr(5,7));
-    mies_z = stoi(data_zakonczenia.substr(5,7));
-
-    dzien_r = stoi(data_rozpoczecia.substr(8,10));
-    dzien_z = stoi(data_zakonczenia.substr(8,10));
-
-    // sprawdzenie czy nie podajemy przeszlego roku
-    if (rok_r < rok_z) return true;
-    if (rok_r == rok_z && mies_z > mies_r) return true;
-    if (rok_r == rok_z && mies_r == mies_z && dzien_z > dzien_r) return true;
-
-    cout << "wystapil blad" << endl;
-    return false;
 }
 
 
@@ -616,13 +622,11 @@ void database::wynajmijPokoj() {
     } while (stoi(data_rozpoczecia.substr(0,4)) < aktualny_rok);
     temp->data_rozpoczecia = data_rozpoczecia;
 
-
-
     do
     {
         data_zakonczenia = checkValid("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$", "Podano zle dane, sprobuj ponownie", "Podaj date zakonczenia pobytu (w formacie rrrr-mm-dd): ");
     } while (!sprawdzPoprawnoscDatyZakonczenia(temp->data_rozpoczecia, data_zakonczenia));
-
+    temp->data_zakonczenia = data_zakonczenia;
 
     system("cls");
     cout << "Wynajecie pokoju przebieglo pomyslnie. Zyczymy udanego pobytu" << endl;
